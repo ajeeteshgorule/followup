@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Health Care Clinic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="60" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-container {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95em;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .time-slot {
+            display: none;
+        }
+        
+        .time-slot-label {
+            display: block;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        
+        .time-slot:checked + .time-slot-label {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+            transform: scale(1.05);
+        }
+        
+        .time-slot-label:hover {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .submit-btn .spinner {
+            display: none;
+            margin-right: 10px;
+        }
+        
+        .submit-btn.loading .spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .submit-btn.loading .btn-text {
+            opacity: 0.7;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .clinic-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .clinic-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .clinic-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .clinic-detail {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #555;
+        }
+        
+        .clinic-detail i {
+            color: #4CAF50;
+            font-size: 1.1em;
+            width: 20px;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .loading-spinner i {
+            font-size: 2em;
+            color: #4CAF50;
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 8px;
+            }
+            
+            .time-slot-label {
+                padding: 10px 12px;
+                font-size: 0.85em;
+            }
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .form-group.error .error-message {
+            display: block;
+        }
+        
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+        
+        .form-group.success input,
+        .form-group.success select,
+        .form-group.success textarea {
+            border-color: #27ae60;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .input-icon input {
+            padding-left: 45px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-heartbeat"></i> Book Your Appointment</h1>
+            <p>Simple and quick appointment booking</p>
+        </div>
+        
+        <div class="form-container">
+            <div id="alertContainer"></div>
+            
+            <form id="appointmentForm" novalidate>
+                <!-- Patient Name -->
+                <div class="form-group">
+                    <label for="patientName">Full Name <span class="required">*</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="patientName" name="patientName" required 
+                               placeholder="Enter your full name" maxlength="100">
+                    </div>
+                    <div class="error-message">Please enter your full name</div>
+                </div>
+                
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" required 
+                               placeholder="your.email@example.com" maxlength="100">
+                    </div>
+                    <div class="error-message">Please enter a valid email address</div>
+                </div>
+                
+                <!-- Phone -->
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required">*</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="phone" name="phone" required 
+                               placeholder="(555) 123-4567" maxlength="20">
+                    </div>
+                    <div class="error-message">Please enter your phone number</div>
+                </div>
+                
+                <!-- Appointment Date -->
+                <div class="form-group">
+                    <label for="appointmentDate">Appointment Date <span class="required">*</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" id="appointmentDate" name="appointmentDate" required>
+                    </div>
+                    <div class="error-message">Please select an appointment date</div>
+                </div>
+                
+                <!-- Time Slots -->
+                <div class="form-group">
+                    <label>Preferred Time <span class="required">*</span></label>
+                    <div class="time-slots" id="timeSlots">
+                        <input type="radio" id="time-0900" name="appointmentTime" value="9:00 AM" class="time-slot" required>
+                        <label for="time-0900" class="time-slot-label">9:00 AM</label>
+                        
+                        <input type="radio" id="time-0930" name="appointmentTime" value="9:30 AM" class="time-slot">
+                        <label for="time-0930" class="time-slot-label">9:30 AM</label>
+                        
+                        <input type="radio" id="time-1000" name="appointmentTime" value="10:00 AM" class="time-slot">
+                        <label for="time-1000" class="time-slot-label">10:00 AM</label>
+                        
+                        <input type="radio" id="time-1030" name="appointmentTime" value="10:30 AM" class="time-slot">
+                        <label for="time-1030" class="time-slot-label">10:30 AM</label>
+                        
+                        <input type="radio" id="time-1100" name="appointmentTime" value="11:00 AM" class="time-slot">
+                        <label for="time-1100" class="time-slot-label">11:00 AM</label>
+                        
+                        <input type="radio" id="time-1130" name="appointmentTime" value="11:30 AM" class="time-slot">
+                        <label for="time-1130" class="time-slot-label">11:30 AM</label>
+                        
+                        <input type="radio" id="time-1400" name="appointmentTime" value="2:00 PM" class="time-slot">
+                        <label for="time-1400" class="time-slot-label">2:00 PM</label>
+                        
+                        <input type="radio" id="time-1430" name="appointmentTime" value="2:30 PM" class="time-slot">
+                        <label for="time-1430" class="time-slot-label">2:30 PM</label>
+                        
+                        <input type="radio" id="time-1500" name="appointmentTime" value="3:00 PM" class="time-slot">
+                        <label for="time-1500" class="time-slot-label">3:00 PM</label>
+                        
+                        <input type="radio" id="time-1530" name="appointmentTime" value="3:30 PM" class="time-slot">
+                        <label for="time-1530" class="time-slot-label">3:30 PM</label>
+                        
+                        <input type="radio" id="time-1600" name="appointmentTime" value="4:00 PM" class="time-slot">
+                        <label for="time-1600" class="time-slot-label">4:00 PM</label>
+                        
+                        <input type="radio" id="time-1630" name="appointmentTime" value="4:30 PM" class="time-slot">
+                        <label for="time-1630" class="time-slot-label">4:30 PM</label>
+                    </div>
+                    <div class="error-message">Please select a time slot</div>
+                </div>
+                
+                <!-- Message/Reason -->
+                <div class="form-group">
+                    <label for="message">Reason for Visit (Optional)</label>
+                    <textarea id="message" name="message" 
+                              placeholder="Please describe the reason for your visit or any symptoms..." 
+                              maxlength="300"></textarea>
+                    <small style="color: #666; font-size: 0.85em;">Maximum 300 characters</small>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-spinner spinner"></i>
+                    <span class="btn-text">
+                        <i class="fas fa-calendar-check"></i>
+                        Book Appointment
+                    </span>
+                </button>
+            </form>
+            
+            <!-- Clinic Information -->
+            <div class="clinic-info">
+                <h3><i class="fas fa-hospital"></i> Clinic Information</h3>
+                <div class="clinic-details">
+                    <div class="clinic-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>123 Main Street, City, State 12345</span>
+                    </div>
+                    <div class="clinic-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>(555) 123-4567</span>
+                    </div>
+                    <div class="clinic-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@healthcareclinic.com</span>
+                    </div>
+                    <div class="clinic-detail">
+                        <i class="fas fa-clock"></i>
+                        <span>Mon-Fri: 9:00 AM - 5:00 PM</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-footer">
+                <p>
+                    <i class="fas fa-shield-alt"></i>
+                    Your information is secure. We'll send you a confirmation email once your appointment is booked.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner"></i>
+            <p>Booking your appointment...</p>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration - Your Google Apps Script URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3oDf70HAGb-_EYOoDAb4QzH_uvhMLau1bn53rCeDUKrHMWruJos7er7I0ax48j4wx/exec';
+        
+        // Form elements
+        const form = document.getElementById('appointmentForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertContainer = document.getElementById('alertContainer');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const appointmentDateInput = document.getElementById('appointmentDate');
+        
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        appointmentDateInput.min = today;
+        
+        // Maximum date (2 months from today)
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 2);
+        appointmentDateInput.max = maxDate.toISOString().split('T')[0];
+        
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            } else if (value.length >= 3) {
+                value = value.replace(/(\d{3})(\d{3})/, '($1) $2');
+            }
+            e.target.value = value;
+        });
+        
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+            
+            // Clear previous errors
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.classList.remove('error', 'success');
+            });
+            
+            // Required fields validation
+            const requiredFields = [
+                { id: 'patientName', message: 'Please enter your full name' },
+                { id: 'email', message: 'Please enter a valid email address' },
+                { id: 'phone', message: 'Please enter your phone number' },
+                { id: 'appointmentDate', message: 'Please select an appointment date' }
+            ];
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                const group = element.closest('.form-group');
+                
+                if (!element.value.trim()) {
+                    group.classList.add('error');
+                    group.querySelector('.error-message').textContent = field.message;
+                    isValid = false;
+                } else {
+                    group.classList.add('success');
+                }
+            });
+            
+            // Email validation
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                const group = document.getElementById('email').closest('.form-group');
+                group.classList.add('error');
+                group.classList.remove('success');
+                group.querySelector('.error-message').textContent = 'Please enter a valid email address';
+                isValid = false;
+            }
+            
+            // Time slot validation
+            const timeSlotSelected = document.querySelector('input[name="appointmentTime"]:checked');
+            if (!timeSlotSelected) {
+                const timeSlotsContainer = document.getElementById('timeSlots').closest('.form-group');
+                timeSlotsContainer.classList.add('error');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Show alert function
+        function showAlert(message, type = 'info') {
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+            
+            alert.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                ${message}
+            `;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            alert.style.display = 'block';
+            
+            // Scroll to alert
+            alert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                showAlert('Please fill in all required fields correctly.', 'error');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            loadingOverlay.style.display = 'flex';
+            
+            // Prepare form data - matching your database structure exactly
+            const formData = new FormData(form);
+            const appointmentData = {
+                Name: formData.get('patientName'),        // Column A
+                Email: formData.get('email'),             // Column B
+                Phone: formData.get('phone'),             // Column C
+                Date: formData.get('appointmentDate'),    // Column D
+                Time: formData.get('appointmentTime'),    // Column E
+                Message: formData.get('message') || ''    // Column F
+                // History (Column G), Note (Column H), Status (Column I) will be set by backend
+            };
+            
+            console.log('Submitting appointment data:', appointmentData);
+            
+            try {
+                // Method 1: Try with fetch and proper headers
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Changed from 'cors' to 'no-cors'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(appointmentData)
+                });
+                
+                // With no-cors mode, we can't read the response, so we assume success
+                console.log('Form submitted successfully');
+                showAlert('🎉 Appointment submitted successfully! You will receive a confirmation email shortly.', 'success');
+                form.reset();
+                // Reset date constraints
+                appointmentDateInput.min = today;
+                appointmentDateInput.max = maxDate.toISOString().split('T')[0];
+                
+            } catch (error) {
+                console.error('Fetch failed, trying alternative method:', error);
+                
+                // Method 2: Fallback to form submission via hidden iframe
+                try {
+                    await submitViaForm(appointmentData);
+                    showAlert('🎉 Appointment submitted successfully! You will receive a confirmation email shortly.', 'success');
+                    form.reset();
+                    appointmentDateInput.min = today;
+                    appointmentDateInput.max = maxDate.toISOString().split('T')[0];
+                } catch (fallbackError) {
+                    console.error('All submission methods failed:', fallbackError);
+                    showAlert('❌ Unable to submit appointment. Please try again or contact us directly at (555) 123-4567.', 'error');
+                }
+            } finally {
+                // Hide loading state
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                loadingOverlay.style.display = 'none';
+            }
+        });
+        
+        // Alternative submission method using form and iframe
+        function submitViaForm(appointmentData) {
+            return new Promise((resolve, reject) => {
+                try {
+                    // Create a hidden form
+                    const hiddenForm = document.createElement('form');
+                    hiddenForm.method = 'POST';
+                    hiddenForm.action = SCRIPT_URL;
+                    hiddenForm.target = 'hidden-iframe';
+                    hiddenForm.style.display = 'none';
+                    
+                    // Add data as hidden inputs
+                    Object.keys(appointmentData).forEach(key => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = appointmentData[key];
+                        hiddenForm.appendChild(input);
+                    });
+                    
+                    // Create hidden iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.name = 'hidden-iframe';
+                    iframe.style.display = 'none';
+                    
+                    // Handle iframe load
+                    iframe.onload = function() {
+                        console.log('Form submitted via iframe');
+                        document.body.removeChild(hiddenForm);
+                        document.body.removeChild(iframe);
+                        resolve();
+                    };
+                    
+                    iframe.onerror = function() {
+                        console.error('Iframe submission failed');
+                        document.body.removeChild(hiddenForm);
+                        document.body.removeChild(iframe);
+                        reject(new Error('Iframe submission failed'));
+                    };
+                    
+                    // Add elements to DOM and submit
+                    document.body.appendChild(iframe);
+                    document.body.appendChild(hiddenForm);
+                    hiddenForm.submit();
+                    
+                    // Timeout after 10 seconds
+                    setTimeout(() => {
+                        if (document.body.contains(hiddenForm)) {
+                            document.body.removeChild(hiddenForm);
+                        }
+                        if (document.body.contains(iframe)) {
+                            document.body.removeChild(iframe);
+                        }
+                        resolve(); // Assume success
+                    }, 10000);
+                    
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+        
+        // Real-time validation
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('blur', function() {
+                const group = this.closest('.form-group');
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    group.classList.add('error');
+                    group.classList.remove('success');
+                } else if (this.value.trim()) {
+                    group.classList.remove('error');
+                    group.classList.add('success');
+                }
+            });
+            
+            element.addEventListener('input', function() {
+                const group = this.closest('.form-group');
+                if (this.value.trim()) {
+                    group.classList.remove('error');
+                }
+            });
+        });
+        
+        // Character counter for message textarea
+        document.getElementById('message').addEventListener('input', function() {
+            const maxLength = 300;
+            const currentLength = this.value.length;
+            const counter = this.nextElementSibling;
+            
+            if (currentLength > maxLength * 0.8) {
+                counter.style.color = currentLength > maxLength ? '#e74c3c' : '#f39c12';
+            } else {
+                counter.style.color = '#666';
+            }
+            
+            counter.textContent = `${currentLength}/${maxLength} characters`;
+        });
+        
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus first input
+            document.getElementById('patientName').focus();
+            
+            // Show welcome message
+            setTimeout(() => {
+                showAlert('👋 Welcome! Please fill out the form to book your appointment.', 'info');
+            }, 1000);
+        });
+        
+        // Add smooth animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.style.opacity = '0';
+            group.style.transform = 'translateY(20px)';
+            group.style.transition = 'all 0.6s ease';
+            observer.observe(group);
+        });
+    </script>
+</body>
+</html>
